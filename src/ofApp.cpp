@@ -45,12 +45,16 @@ void ofApp::load(string filename) {
 
     file >> js;
     
+    std::map<std::string, int> colorMap = getColorMap(js);
+
     ofVec2f minPoint(1e8, 1e8);
     ofVec2f maxPoint(-1e8, -1e8);
-    for (auto & entry: js) {
-        if(!entry.empty()) {
-            string path = entry["path"];
-            string label = entry["label"];
+    for (auto & entry: js) 
+    {
+        if(!entry.empty()) 
+        {
+            std::string path = entry["path"];
+            std::string label = entry["label"];
             float x = entry["point"][0];
             float y = entry["point"][1];
             minPoint.x = min(minPoint.x, x);
@@ -62,15 +66,58 @@ void ofApp::load(string filename) {
             newSound.point.set(x, y);
             newSound.t = 0;
             newSound.label = label;
+            newSound.color = getColor(label, colorMap);
             sounds.push_back(newSound);
         }
     }
     
     // normalize the points
-    for (int i=0; i<sounds.size(); i++) {
+    for (int i=0; i<sounds.size(); i++) 
+    {
         sounds[i].point.set(ofMap(sounds[i].point.x, minPoint.x, maxPoint.x, 0, 1),
                             ofMap(sounds[i].point.y, minPoint.y, maxPoint.y, 0, 1));
     }
+}
+
+//--------------------------------------------------------------
+std::map<std::string, int> ofApp::getColorMap(ofJson js)
+{
+    // remove duplicate labels
+    std::vector<std::string> labels;
+    for (auto & entry: js) 
+    {
+        if(!entry.empty()) 
+        {
+            labels.push_back(entry["label"]);
+        }
+    }
+    std::sort(labels.begin(), labels.end());
+    auto last = std::unique(labels.begin(), labels.end());
+    labels.erase(last, labels.end());
+
+    // create colorMap
+    std::vector<int> colors{0x0001f6, //blue
+                            0xff0020, //red
+                            0x40ff40, //green
+                            0xff6000, //orange
+                            0xff66c0, //pink
+                            0x60720f, //military-green
+                            0xffeead}; //skin color
+
+    std::map<std::string, int> colorMap;
+    for (int i=0; i<labels.size(); i++)
+    {
+        colorMap[labels[i]] = colors[i];
+    }
+
+    return colorMap;
+}
+
+//--------------------------------------------------------------
+int ofApp::getColor(std::string label, std::map<std::string, int> colorMap)
+{
+    int color = colorMap[label];
+    return color;
 }
 
 //--------------------------------------------------------------
@@ -101,15 +148,7 @@ void ofApp::draw(){
         }
         else {
         //TODO: draw points from same class with same color !!!
-            if (sounds[i].label == "piano")
-            {
-                ofSetHexColor(0x00ff00); // https://www.color-hex.com/
-            }
-            else
-            {
-                ofSetHexColor(0xffffff);
-            }
-            //ofSetColor(255, 180);
+            ofSetHexColor(sounds[i].color); // https://www.color-hex.com/
         }
         ofDrawCircle(ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y, 4);
     }

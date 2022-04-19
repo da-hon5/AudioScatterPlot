@@ -9,6 +9,7 @@ public:
     ofPoint point;
     float t;
     std::string label;
+    int color;
 };
 
 class ofApp : public ofBaseApp{
@@ -19,7 +20,9 @@ public:
     void draw();
     
     void eLoad();
-    void load(string file);
+    void load(std::string file);
+    std::map<std::string, int> getColorMap(ofJson js);
+    int getColor(std::string label, std::map<std::string, int> colorMap);
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -33,7 +36,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    vector<AudioClip> sounds;
+    std::vector<AudioClip> sounds;
     
     ofParameter<float> maxDuration;
     ofParameter<float> mouseRadius;
@@ -41,6 +44,6 @@ public:
     ofxButton bLoad;
     ofxPanel gui;
     
-    string tsnePath;
+    std::string tsnePath;
     bool parsingSuccessful;
 };
