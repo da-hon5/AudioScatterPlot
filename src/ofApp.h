@@ -3,7 +3,8 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 
-struct AudioClip {
+struct AudioClip 
+{
 public:
     ofSoundPlayer sound;
     std::string path;
@@ -13,7 +14,8 @@ public:
     int color;
 };
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp
+{
     
 public:
     void setup();

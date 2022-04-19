@@ -2,7 +2,8 @@
 
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup()
+{
     
     // this should point to the json file containing your audio files and tsne coordinates
     // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/
@@ -13,7 +14,7 @@ void ofApp::setup(){
     gui.setup();
     gui.setName("Audio t-SNE");
     gui.add(maxDuration.set("maxDuration", 1.0, 0.1, 2.0));
-    gui.add(mouseRadius.set("mouseRadius", 250, 100, 500));
+    gui.add(mouseRadius.set("mouseRadius", 20, 5, 300));
     gui.add(pauseLength.set("pauseLength", 2.0, 0.2, 5.0));
     gui.add(bLoad.setup("Load model"));
 
@@ -21,22 +22,24 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::eLoad() {
+void ofApp::eLoad() 
+{
     ofFileDialogResult result = ofSystemLoadDialog("Which xml file to load?", true);
-    if (result.bSuccess) {
+    if (result.bSuccess) 
         load(result.filePath);
-    }
 }
 
 //--------------------------------------------------------------
-void ofApp::load(string filename) {
+void ofApp::load(string filename) 
+{
     tsnePath = filename;
 
     ofJson js;
     ofFile file(tsnePath);
     parsingSuccessful = file.exists();
     
-    if (!parsingSuccessful) {
+    if (!parsingSuccessful) 
+    {
         ofLog(OF_LOG_ERROR) << "parsing not successful";
         return;
     }
@@ -88,21 +91,20 @@ std::map<std::string, int> ofApp::getColorMap(ofJson js)
     for (auto & entry: js) 
     {
         if(!entry.empty()) 
-        {
             labels.push_back(entry["label"]);
-        }
     }
+
     std::sort(labels.begin(), labels.end());
     auto last = std::unique(labels.begin(), labels.end());
     labels.erase(last, labels.end());
 
-    // create colorMap
+    // create colorMap (https://www.color-hex.com/)
     std::vector<int> colors{0x0001f6, //blue
                             0xff0020, //red
                             0x40ff40, //green
                             0xff6000, //orange
                             0xff66c0, //pink
-                            0x60720f, //military-green
+                            0xfffe00, //yellow
                             0xffeead}; //skin color
 
     std::map<std::string, int> colorMap;
@@ -122,15 +124,17 @@ int ofApp::getColor(std::string label, std::map<std::string, int> colorMap)
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
-    // This function gets called repeatedly. It gets called just before draw.
-    if (!parsingSuccessful) {
+// This function gets called repeatedly. It gets called just before draw.
+void ofApp::update()
+{
+    if (!parsingSuccessful) 
         return;
-    }
     
-    for (int i=0; i<sounds.size(); i++) {
-        if (sounds[i].sound.isPlaying() && sounds[i].sound.getPositionMS() > maxDuration*1000) {
-            sounds[i].sound.stop();
+    for (int i=0; i<sounds.size(); i++) 
+    {
+        if (sounds[i].sound.isPlaying() && sounds[i].sound.getPositionMS() > maxDuration*1000) 
+        {
+            //sounds[i].sound.stop();
             sounds[i].sound.unload();
         }
     }
@@ -138,27 +142,31 @@ void ofApp::update(){
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw()
+{
     ofBackgroundGradient(ofColor(100), ofColor(20));
-    if (!parsingSuccessful) {
+    if (!parsingSuccessful) 
+    {
         ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.", 50, 50);
         return;
     }
-    for (int i=0; i<sounds.size(); i++) {
-        if (sounds[i].sound.isPlaying()) {
+
+    for (int i=0; i<sounds.size(); i++) 
+    {
+        if (sounds[i].sound.isPlaying()) 
             ofSetColor(0, 0, 0);
-        }
-        else {
-        //TODO: draw points from same class with same color !!!
-            ofSetHexColor(sounds[i].color); // https://www.color-hex.com/
-        }
+        else 
+            ofSetHexColor(sounds[i].color);
+            
         ofDrawCircle(ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y, 4);
     }
+    //TODO: draw a legend here!
     gui.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    
 }
 
 //--------------------------------------------------------------
@@ -167,15 +175,18 @@ void ofApp::keyReleased(int key){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-   for (int i=0; i<sounds.size(); i++) {
-      float distanceToMouse = ofDistSquared(x, y, ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y);
-       if (distanceToMouse < mouseRadius && !sounds[i].sound.isPlaying() && (ofGetElapsedTimef() - sounds[i].t > pauseLength)) {
-           sounds[i].t = ofGetElapsedTimef();
-           sounds[i].sound.load(sounds[i].path);
-           sounds[i].sound.play();
-       }
-   }
+void ofApp::mouseMoved(int x, int y )
+{
+    for (int i=0; i<sounds.size(); i++) 
+    {
+        float distanceToMouse = ofDistSquared(x, y, ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y);
+        if (distanceToMouse < mouseRadius && !sounds[i].sound.isPlaying() && (ofGetElapsedTimef() - sounds[i].t > pauseLength)) 
+        {
+            sounds[i].t = ofGetElapsedTimef();
+            sounds[i].sound.load(sounds[i].path);  //loads sound on the fly
+            sounds[i].sound.play();
+        }
+    }
 }
 
 //--------------------------------------------------------------

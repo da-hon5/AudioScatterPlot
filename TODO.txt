@@ -5,6 +5,11 @@
 
 * maybe just load sounds on the fly and don't load all sounds in advance?
 
-* add legend to visualization 
+* add legend to visualization --> e.g. violin (green), viola (blue), ...
 
 * how to change samplerate?
+
+* experiment with timbre descriptors other than mfccs
+
+* conclusion for master thesis: 
+  it's not possible to cluster the instrument classes based only on timbre features, because the timbre variation within the classes is to big?!
