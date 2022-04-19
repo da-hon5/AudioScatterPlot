@@ -6,6 +6,7 @@
 struct AudioClip {
 public:
     ofSoundPlayer sound;
+    std::string path;
     ofPoint point;
     float t;
     std::string label;

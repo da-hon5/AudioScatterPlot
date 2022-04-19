@@ -62,7 +62,8 @@ void ofApp::load(string filename) {
             maxPoint.x = max(maxPoint.x, x);
             maxPoint.y = max(maxPoint.y, y);
             AudioClip newSound;
-            newSound.sound.load(path);
+            newSound.path = path;
+            //newSound.sound.load(path); //TODO: only 256 sounds can be loaded !!!
             newSound.point.set(x, y);
             newSound.t = 0;
             newSound.label = label;
@@ -130,6 +131,7 @@ void ofApp::update(){
     for (int i=0; i<sounds.size(); i++) {
         if (sounds[i].sound.isPlaying() && sounds[i].sound.getPositionMS() > maxDuration*1000) {
             sounds[i].sound.stop();
+            sounds[i].sound.unload();
         }
     }
     ofSoundUpdate();
@@ -170,6 +172,7 @@ void ofApp::mouseMoved(int x, int y ){
       float distanceToMouse = ofDistSquared(x, y, ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y);
        if (distanceToMouse < mouseRadius && !sounds[i].sound.isPlaying() && (ofGetElapsedTimef() - sounds[i].t > pauseLength)) {
            sounds[i].t = ofGetElapsedTimef();
+           sounds[i].sound.load(sounds[i].path);
            sounds[i].sound.play();
        }
    }

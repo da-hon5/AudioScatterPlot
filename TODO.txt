@@ -1,0 +1,10 @@
+
+* how to load more than 256 sounds?
+ --> https://stackoverflow.com/questions/28141817/does-openal-soft-have-an-upper-limit-on-the-number-of-sources
+ --> https://stackoverflow.com/questions/2871905/openal-determine-maximum-sources
+
+* maybe just load sounds on the fly and don't load all sounds in advance?
+
+* add legend to visualization 
+
+* how to change samplerate?
