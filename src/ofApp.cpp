@@ -6,7 +6,6 @@ void ofApp::setup()
 {
     
     // this should point to the json file containing your audio files and tsne coordinates
-    // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/
     //TODO: use relative path!
     tsnePath = ofToDataPath("/home/hons/Desktop/instrument-recognition/src/t-sne/points.json");
     
@@ -16,7 +15,7 @@ void ofApp::setup()
     gui.add(maxDuration.set("maxDuration", 1.0, 0.1, 2.0));
     gui.add(mouseRadius.set("mouseRadius", 20, 5, 300));
     gui.add(pauseLength.set("pauseLength", 2.0, 0.2, 5.0));
-    gui.add(bLoad.setup("Load model"));
+    gui.add(bLoad.setup("Load json-file"));
 
     load(tsnePath);
 }
@@ -24,7 +23,9 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::eLoad() 
 {
-    ofFileDialogResult result = ofSystemLoadDialog("Which xml file to load?", true);
+    ofFileDialogResult result = ofSystemLoadDialog("Select a json-file!",
+    						 false, 
+    						 "/home/hons/Desktop/instrument-recognition/src/t-sne");
     if (result.bSuccess) 
         load(result.filePath);
 }
@@ -78,8 +79,9 @@ void ofApp::load(string filename)
     // normalize the points
     for (int i=0; i<sounds.size(); i++) 
     {
-        sounds[i].point.set(ofMap(sounds[i].point.x, minPoint.x, maxPoint.x, 0, 1),
-                            ofMap(sounds[i].point.y, minPoint.y, maxPoint.y, 0, 1));
+        sounds[i].point.set(ofMap(sounds[i].point.x, minPoint.x, maxPoint.x, 0.02, 0.98), // change back to range 0 - 1
+                            ofMap(sounds[i].point.y, minPoint.y, maxPoint.y, 0.02, 0.98));
+        printf("%.6f, %.6f\n", sounds[i].point.x, sounds[i].point.y); // just for debugging
     }
 }
 
@@ -165,17 +167,13 @@ void ofApp::draw()
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-    
-}
+void ofApp::keyPressed(int key){}
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-    
-}
+void ofApp::keyReleased(int key){}
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y )
+void ofApp::mouseMoved(int x, int y)
 {
     for (int i=0; i<sounds.size(); i++) 
     {
@@ -190,49 +188,25 @@ void ofApp::mouseMoved(int x, int y )
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-    
-}
+void ofApp::mouseDragged(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-	//TODO: change this!!!?
-	// for (int i=0; i<sounds.size(); i++) {
-	// 	float distanceToMouse = ofDistSquared(x, y, ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y);
-	// 	if (distanceToMouse < mouseRadius && !sounds[i].sound.isPlaying() && (ofGetElapsedTimef() - sounds[i].t > pauseLength)) {
-	// 	    sounds[i].t = ofGetElapsedTimef();
-	// 	    sounds[i].sound.play();
-	// 	}
-	//     }
-    
-}
+void ofApp::mousePressed(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-    
-}
+void ofApp::mouseReleased(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-    
-}
+void ofApp::mouseEntered(int x, int y){}
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-    
-}
+void ofApp::mouseExited(int x, int y){}
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-    
-}
+void ofApp::windowResized(int w, int h){}
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-    
-}
+void ofApp::gotMessage(ofMessage msg){}
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-    
-}
+void ofApp::dragEvent(ofDragInfo dragInfo){}
